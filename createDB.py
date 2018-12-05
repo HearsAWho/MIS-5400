@@ -86,7 +86,7 @@ for row in range(0,len(eList)):
 #insert cleaned data to DB
 print("adding data to DB")
 with sqlite3.connect("finalProj\REIT.db") as con:
-    for i in range(0,int(len(aList))): # last row pulled from source contained titles again, so iterate to 1 before that
+    for i in range(0,int(len(aList))): 
         cur = con.cursor()
         cur.execute("INSERT INTO AllReits (ticker,name,price,divYield,mktCap,pe,payout) VALUES (?,?,?,?,?,?,?)",
                 (aList[i], bList[i], cList[i], dList[i], eList[i], fList[i], gList[i]))
@@ -101,7 +101,7 @@ print ("Insert successful")
 
 # take 'investment worthy' reits and pull dividend history, 1 year price target,forward pe,
 
-# find trend of dividend and remove downtrending REITS
+# find trend of dividend and remove downtrending REITS?
 
 
 # store new data in new div history table and link to allReits via ticker
@@ -111,8 +111,8 @@ print ("Insert successful")
 
 
 
-
-"""# personal help code:"""
+#############################
+#"""# personal help code:"""
 # reconnect and pull the data to confirm integrity
 conn = sqlite3.connect('finalProj\REIT.db')
 c = conn.cursor()
