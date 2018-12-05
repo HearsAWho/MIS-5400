@@ -1,0 +1,32 @@
+<html>
+   <body>
+      
+      <form action = "{{ url_for('item') }}" method = "POST">
+         <h3>Current Company Information</h3>
+         
+         Ticker<br>
+         <input type = "text" name = "tkr" /></br>
+         
+		 Company Name<br>
+         <textarea name = "name" ></textarea><br>
+         
+         Price<br>
+         <input type = "text" name = "price" /><br>
+         
+         Dividend Yield<br>
+         <input type = "text" name = "div" /><br>
+		 
+		 Market Cap<br>
+         <input type = "text" name = "cap" /><br>
+		 
+		 Price Earnings Ratio<br>
+         <input type = "text" name = "pe" /><br>
+		 
+		 Payout Ratio<br>
+         <input type = "text" name = "payout" /><br>
+		 
+         <input type = "submit" value = "submit" /><br>
+      </form>
+      <a href = "/">Go back to home page</a>
+   </body>
+</html>

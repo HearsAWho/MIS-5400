@@ -1,0 +1,33 @@
+<!doctype html>
+<html>
+   <body>
+   
+      <table border = 1>
+         <thead>
+            <td>Name</td>
+            <td>ticker</td>
+            <td>price</td>
+            <td>dividend yield</td>
+			<td>market cap</td>
+			<td>price earnings</td>
+			<td>payout ratio</td>
+         </thead>
+         
+         {% for row in rows %}
+            <tr>
+               <td>{{row["name"]}}</td>
+               <td>{{row["ticker"]}}</td>
+               <td>{{ row["price"]}}</td>
+               <td>{{row["divYield"]}}</td>	
+			   <td>{{row["mktCap"]}}</td>	
+			   <td>{{row["pe"]}}</td>	
+			   <td>{{row["payout"]}}</td>	
+			   
+            </tr>
+         {% endfor %}
+      </table>
+      
+      <a href = "/">Go back to home page</a>
+      
+   </body>
+</html>
