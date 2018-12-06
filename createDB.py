@@ -5,7 +5,7 @@ from bs4 import BeautifulSoup
 
 
 # open DB and create table
-conn = sqlite3.connect('finalProj\REIT.db')
+conn = sqlite3.connect('REIT.db')
 print ("Opened database successfully")
 
 conn.execute('CREATE TABLE AllReits (ticker text, name text , price real, divYield real, mktCap text, pe real, payout real)')
@@ -55,7 +55,7 @@ for row in our_table.findAll('tr'):
 print("data scraped")
 
 # create second table for stats on pulled data
-conn = sqlite3.connect('finalProj\REIT.db')
+conn = sqlite3.connect('REIT.db')
 print ("Opened database successfully")
 conn.execute('CREATE TABLE ReitSum (totalReits real, avgDivY real, avgPE real )')
 print ("Table created successfully")
@@ -85,7 +85,7 @@ for row in range(0,len(eList)):
 
 #insert cleaned data to DB
 print("adding data to DB")
-with sqlite3.connect("finalProj\REIT.db") as con:
+with sqlite3.connect("REIT.db") as con:
     for i in range(0,int(len(aList))): 
         cur = con.cursor()
         cur.execute("INSERT INTO AllReits (ticker,name,price,divYield,mktCap,pe,payout) VALUES (?,?,?,?,?,?,?)",
@@ -97,6 +97,13 @@ print ("Insert successful")
 # filter down from allReits to those that we would consider invest-worthy based on existing data
 #  eps(can calc from price and pe)
 
+with sqlite3.connect("REIT.db") as con:
+    for i in range(0,int(len(aList))):
+        cur = con.cursor()
+        cur.execute("SELECT FROM AllReits (ticker,divYield,mktCap,pe) VALUES (?,?,?,?)",
+                (aList[i], dList[i], eList[i], fList[i],))
+        con.commit()
+con.close()
 
 
 # take 'investment worthy' reits and pull dividend history, 1 year price target,forward pe,
@@ -114,7 +121,7 @@ print ("Insert successful")
 #############################
 #"""# personal help code:"""
 # reconnect and pull the data to confirm integrity
-conn = sqlite3.connect('finalProj\REIT.db')
+conn = sqlite3.connect('REIT.db')
 c = conn.cursor()
 
 # select * from the table I already created previously
