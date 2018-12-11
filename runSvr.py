@@ -9,43 +9,9 @@ app = Flask(__name__)
 def home():
     return render_template('home.html'), 200
 
-@app.route('/enternew')
-def new_entry():
-    return render_template('reit.html'), 200
-
-@app.route('/delete')
-def del_entry():
-    return render_template('delete.html'), 200
 
 
-@app.route('/item',methods = ['POST'])
-def addrec():
-    try:
-        ticker = request.form['tkr']
-        name = request.form['name']
-        price = request.form['price']
-        divYield = request.form['div']
-        mktCap = request.form['cap']
-        pe = request.form['pe']
-        payout = request.form['payout']
-
-        with sql.connect("reit.db") as con:
-            cur = con.cursor()
-
-            cur.execute("INSERT INTO AllReits (ticker,name,price,divYield,mktCap,pe,payout) VALUES (?,?,?,?,?,?,?)",(ticker,name,price,divYield,mktCap,pe,payout) )
-
-            con.commit()
-            msg = "Record successfully added"
-    except:
-        con.rollback()
-        msg = "error in insert operation"
-
-    finally:
-        return render_template("result.html",msg = msg)
-        con.close()
-
-
-@app.route('/item', methods = ['GET'])
+@app.route('/allReits', methods = ['GET'])
 def item():
     con = sql.connect("reit.db")
     con.row_factory = sql.Row
@@ -54,6 +20,17 @@ def item():
 
     rows = cur.fetchall();
     return render_template("list.html",rows = rows)
+
+@app.route('/goodReits', methods = ['GET'])
+def goodreit():
+    con = sql.connect("reit.db")
+    con.row_factory = sql.Row
+    cur = con.cursor()
+    cur.execute("SELECT * FROM goodReits order by divYield desc LIMIT 1000")
+
+    rows = cur.fetchall();
+    return render_template("list.html",rows = rows)
+
 
 
 @app.route('/item/<string:id>', methods=['GET'])
@@ -81,3 +58,42 @@ def delete_by_id(id):
 
 if __name__ == '__main__':
     app.run(debug = True)
+
+"""
+
+@app.route('/item',methods = ['POST'])
+def addrec():
+    try:
+        ticker = request.form['tkr']
+        name = request.form['name']
+        price = request.form['price']
+        divYield = request.form['div']
+        mktCap = request.form['cap']
+        pe = request.form['pe']
+        payout = request.form['payout']
+
+        with sql.connect("reit.db") as con:
+            cur = con.cursor()
+
+            cur.execute("INSERT INTO AllReits (ticker,name,price,divYield,mktCap,pe,payout) VALUES (?,?,?,?,?,?,?)",(ticker,name,price,divYield,mktCap,pe,payout) )
+
+            con.commit()
+            msg = "Record successfully added"
+    except:
+        con.rollback()
+        msg = "error in insert operation"
+
+    finally:
+        return render_template("result.html",msg = msg)
+        con.close()
+
+@app.route('/enternew')
+def new_entry():
+    return render_template('reit.html'), 200
+
+@app.route('/delete')
+def del_entry():
+    return render_template('delete.html'), 200
+
+
+"""

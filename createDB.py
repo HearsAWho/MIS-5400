@@ -8,7 +8,7 @@ from bs4 import BeautifulSoup
 conn = sqlite3.connect('REIT.db')
 print ("Opened database successfully")
 
-conn.execute('CREATE TABLE AllReits (ticker text, name text , price real, divYield real, mktCap text, pe real, payout real)')
+conn.execute('CREATE TABLE AllReits (ticker text, name text , price real, divYield real, mktCap real, pe real, payout real)')
 print ("Table created successfully")
 conn.commit()
 conn.close()
@@ -54,19 +54,6 @@ for row in our_table.findAll('tr'):
         gList.append(cells[6].find(text=True))
 print("data scraped")
 
-# create second table for stats on pulled data
-conn = sqlite3.connect('REIT.db')
-print ("Opened database successfully")
-conn.execute('CREATE TABLE ReitSum (totalReits real, avgDivY real, avgPE real )')
-print ("Table created successfully")
-conn.commit()
-cur = conn.cursor()
-cur.execute("INSERT INTO ReitSum (totalReits,avgDivY, avgPE) VALUES (?,?,?)",
-                (int(len(aList)), round(mean(float(dList)),2) ,  round(mean(float(fList)),2))
-            )
-conn.commit()
-conn.close()
-
 
 #now that we have the raw input, clean it
 # pop last element as it is garbage data
@@ -80,8 +67,11 @@ gList = gList[:-1]
 
 # convert market cap to str to remove comma's then store as double
 for row in range(0,len(eList)):
-    eList[row] = float(str(eList[row]).replace(',',''))
-
+    if cList[row]: cList[row] = float(str(cList[row]).replace(',',''))
+    if dList[row]: dList[row] = float(str(dList[row]).replace(',',''))
+    if eList[row]: eList[row] = float(str(eList[row]).replace(',',''))
+    if fList[row]: fList[row] = float(str(fList[row]).replace(',',''))
+    if gList[row]: gList[row] = float(str(gList[row]).replace(',',''))
 
 #insert cleaned data to DB
 print("adding data to DB")
@@ -94,27 +84,27 @@ with sqlite3.connect("REIT.db") as con:
 con.close()
 print ("Insert successful")
 
+
+
+
 # filter down from allReits to those that we would consider invest-worthy based on existing data
 #  eps(can calc from price and pe)
 
 with sqlite3.connect("REIT.db") as con:
-    for i in range(0,int(len(aList))):
-        cur = con.cursor()
-        cur.execute("SELECT FROM AllReits (ticker,divYield,mktCap,pe) VALUES (?,?,?,?)",
-                (aList[i], dList[i], eList[i], fList[i],))
-        con.commit()
+    cur = con.cursor()
+    con.execute(
+        'CREATE TABLE goodReits (ticker text, name text , price real, divYield real, mktCap real, pe real, payout real)')
+    cur.execute("insert into goodReits "
+                "SELECT * FROM AllReits WHERE divYield > 8 and pe < 14 and mktCap > 250;")
 con.close()
 
 
+
+# for version 2:
 # take 'investment worthy' reits and pull dividend history, 1 year price target,forward pe,
-
 # find trend of dividend and remove downtrending REITS?
-
-
 # store new data in new div history table and link to allReits via ticker
 
-
-# visualise here or on server at runtime depending on how that works.
 
 
 
@@ -127,7 +117,7 @@ c = conn.cursor()
 # select * from the table I already created previously
 c.execute(
     '''
-    select * from AllReits
+    select * from goodReits
 
     '''
     )
